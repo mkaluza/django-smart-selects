@@ -58,10 +58,9 @@ class ChainedSelect(Select):
         js.append(static("smart_selects/js/chained.js"))
 
     def render(self, name, value, attrs=None, choices=()):
+        chain_field = self.chain_field.split("__")[0]
         if len(name.split('-')) > 1:  # formset
-            chain_field = '-'.join(name.split('-')[:-1] + [self.chain_field])
-        else:
-            chain_field = self.chain_field
+            chain_field = '-'.join(name.split('-')[:-1] + [chain_field])
         if not self.view_name:
             if self.show_all:
                 view_name = "chained_filter_all"
@@ -76,6 +75,7 @@ class ChainedSelect(Select):
             'foreign_key_app_name': self.foreign_key_app_name,
             'foreign_key_model_name': self.foreign_key_model_name,
             'foreign_key_field_name': self.foreign_key_field_name,
+            'chain_field': self.chain_field,
             'value': '1'
             }
         if self.manager is not None:
