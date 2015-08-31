@@ -122,15 +122,20 @@ class ChainedSelect(Select):
 
             $(document).ready(function(){
                 var el = $("#%(id)s");
-                function fill_field(val, init_value){
-                    if (!val || val==''){
+                function fill_field(val, init_value, pk){
+                    if ((!val || val=='') && !pk){
                         options = '<option value="">%(empty_label)s<'+'/option>';
                         $("#%(id)s").html(options);
                         $('#%(id)s option:first').attr('selected', 'selected');
                         $("#%(id)s").trigger('change');
                         return;
                     }
-                    $.getJSON("%(url)s/"+val+"/", function(j){
+                    var url = "%(url)s/";
+                    if (!val && pk)
+                        url += "0/pk/"+pk;
+                    else
+                        url += val;
+                    $.getJSON(url+"/", function(j){
                         var options = '<option value="">%(empty_label)s<'+'/option>';
                         var prev_value = el.children("option[selected='selected']").val();
                         for (var i = 0; i < j.length; i++) {
@@ -155,8 +160,21 @@ class ChainedSelect(Select):
 
                 var chainfield = $("#id_%(chainfield)s");
 
-                if(!chainfield.hasClass("chained")){
-                    fill_field(chainfield.val(), "%(value)s");
+                if(!chainfield.hasClass("chained") || !el.children().length){
+                    var pk;
+                    var val = chainfield.val();
+                    if (!chainfield.length) {
+                        var a;
+                        a = el.parents("tr").first().children("td.action-checkbox").children("input.action-select");
+                        if (a.length)
+                            pk = a.val();
+                        else {
+                            a = el.parents("div.inline-group");
+                            if (a.length)
+                                val = document.location.pathname.match(/\d+[/]?$/)[0].replace("/","");
+                        }
+                    }
+                    fill_field(val, "%(value)s", pk);
                 }
 
                 chainfield.change(function(){
