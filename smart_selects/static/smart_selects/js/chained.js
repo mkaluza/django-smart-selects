@@ -40,6 +40,7 @@
 
             $.getJSON(relatedSelect.data('ss-url') + "/"+val+"/", function(j){
                 var options = '<option value="">'+empty_label+'<'+'/option>';
+                var prev_value = relatedSelect.children("option[selected='selected']").val();
                 for (var i = 0; i < j.length; i++) {
                     options += '<option value="' + j[i].value + '">' + j[i].display + '<'+'/option>';
                 }
@@ -56,7 +57,8 @@
                 } else if (relatedSelect.find('option[selected=selected]').length === 0) {
                     relatedSelect.find('option:first').attr('selected', 'selected');
                 }
-                relatedSelect.trigger('change');
+                if (init_value != prev_value)
+                    relatedSelect.trigger('change');
             });
         }
 
