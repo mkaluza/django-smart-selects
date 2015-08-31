@@ -66,6 +66,13 @@
             if ( relatedSelect.length == 0 ) return;
             fill_field(relatedTo, relatedSelect);
         });
+        $("select.chained[data-ss-autoload='1']").each(function() {
+            var relatedSelect = $(this);
+            var relatedTo = $('#'+relatedSelect.attr('data-ss-id'));
+            if ( relatedSelect.length == 0 ) return;
+            fill_field(relatedTo, relatedSelect);
+        });
+
     });
     if (typeof(dismissAddAnotherPopup) !== 'undefined') {
         var oldDismissAddAnotherPopup = dismissAddAnotherPopup;

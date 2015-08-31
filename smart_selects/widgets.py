@@ -115,6 +115,8 @@ class ChainedSelect(Select):
         final_attrs['data-ss-value'] = value
         final_attrs['data-ss-auto_choose'] = auto_choose
         final_attrs['data-ss-empty_label'] = empty_label
+        if not value:
+            final_attrs['data-ss-autoload'] = 1
 
         output = super(ChainedSelect, self).render(name, value, final_attrs, choices=final_choices)
         return mark_safe(output)
